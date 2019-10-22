@@ -1,10 +1,19 @@
 package com.example.groupproject;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -12,13 +21,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.Scanner;
 
-import android.accounts.NetworkErrorException;
-import android.content.Context;
-import android.content.Intent;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.os.Bundle;
+import fi.iki.elonen.NanoHTTPD;
 
 /*
     Code reference: http://android-er.blogspot.com/2015/01/simple-web-server-using.html
@@ -26,10 +31,10 @@ import android.os.Bundle;
 
 public class HttpServer extends AppCompatActivity {
 
-    EditText welcomeMsg;
     TextView infoIp;
     TextView infoMsg;
-    String msgLog = "";
+    private final int PORT = 8888;
+    private CassetteServer cs;
 
     ServerSocket httpServerSocket;
 
@@ -45,28 +50,61 @@ public class HttpServer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http_server);
 
-        welcomeMsg = (EditText) findViewById(R.id.welcomemsg);
         infoIp = (TextView) findViewById(R.id.infoip);
         infoMsg = (TextView) findViewById(R.id.msg);
+        cs = new CassetteServer(PORT);
 
-        infoIp.setText(getIpAddress() + ":"
-                + HttpServerThread.HttpServerPORT + "\n");
+        infoIp.setText(getIpAddress() + ":" + PORT + "\n");
 
-        HttpServerThread httpServerThread = new HttpServerThread();
-        httpServerThread.start();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        if (httpServerSocket != null) {
-            try {
-                httpServerSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (cs != null) {
+            cs.closeAllConnections();
+        }
+    }
+
+
+    private class CassetteServer extends NanoHTTPD {
+        public CassetteServer(int port){
+            super(port);
+            try{
+                start();
+            }
+            catch (IOException e){
+                Log.d("socketERR","connection failed");
             }
         }
+
+        @Override
+        public Response serve(IHTTPSession session){
+            return newFixedLengthResponse(constructHTMl());
+        }
+
+        private String constructHTMl(){
+            String html = "<html><head><meta charset=\\\"UTF-8\\\">" +
+                    "<title>Android Server</title>" +
+                    "<script type=\\\"text/javascript\\\">"+
+                    "function sendUpdate(){" +
+                    "var xmlhttp;" +
+                    "if (window.XMLHttpRequest)xmlhttp=new XMLHttpRequest();" +
+                    "else xmlhttp=new ActiveXObject(\\\"Microsoft.XMLHTTP\\\");" +
+                    "xmlhttp.open(\\\"GET\\\",\\\"?getFile\\\",true); " +
+                    "xmlhttp.send();" +
+                    "xmlhttp.onreadystatechange=function(){" +
+                    "if (xmlhttp.readyState==4 && xmlhttp.status==200)" +
+                    "document.getElementById(\\\"info\\\").innerHTML=xmlhttp.responseText;};" +
+                    "}</script>"+"</head>" +
+                    "<body>" +
+                    "<h1>Welcome to the market.</h1>" +
+                    "</div><button id=\"update\" type=\"button\" onclick=\"sendUpdate()\">get</button>"+
+                    "</body></html>";
+            return html;
+        }
+
     }
 
     private String getIpAddress() {
@@ -100,91 +138,5 @@ public class HttpServer extends AppCompatActivity {
         return ip;
     }
 
-    private class HttpServerThread extends Thread {
 
-        static final int HttpServerPORT = 8888;
-
-        @Override
-        public void run() {
-            Socket socket = null;
-
-            try {
-                httpServerSocket = new ServerSocket(HttpServerPORT);
-
-                while(true){
-                    socket = httpServerSocket.accept();
-
-                    HttpResponseThread httpResponseThread =
-                            new HttpResponseThread(
-                                    socket,
-                                    welcomeMsg.getText().toString());
-                    httpResponseThread.start();
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-
-
-    }
-
-    private class HttpResponseThread extends Thread {
-
-        Socket socket;
-        String h1;
-
-        HttpResponseThread(Socket socket, String msg){
-            this.socket = socket;
-            h1 = msg;
-        }
-
-        @Override
-        public void run() {
-            BufferedReader is;
-            PrintWriter os;
-            String request;
-
-
-            try {
-                is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                request = is.readLine();
-
-                os = new PrintWriter(socket.getOutputStream(), true);
-
-                String response =
-                        "<html><head></head>" +
-                                "<body>" +
-                                "<h1>" + h1 + "</h1>" +
-                                "</body></html>";
-
-                os.print("HTTP/1.0 200" + "\r\n");
-                os.print("Content type: text/html" + "\r\n");
-                os.print("Content length: " + response.length() + "\r\n");
-                os.print("\r\n");
-                os.print(response + "\r\n");
-                os.flush();
-                socket.close();
-
-
-                msgLog += "Request of " + request
-                        + " from " + socket.getInetAddress().toString() + "\n";
-                HttpServer.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        infoMsg.setText(msgLog);
-                    }
-                });
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return;
-        }
-    }
 }
