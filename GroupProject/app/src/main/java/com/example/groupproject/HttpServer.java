@@ -9,25 +9,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.Scanner;
 
 import fi.iki.elonen.NanoHTTPD;
 
-/*
-    Code reference: http://android-er.blogspot.com/2015/01/simple-web-server-using.html
- */
 
 public class HttpServer extends AppCompatActivity {
 
@@ -54,16 +46,20 @@ public class HttpServer extends AppCompatActivity {
         infoMsg = (TextView) findViewById(R.id.msg);
         cs = new CassetteServer(PORT);
 
+        //display full http address on the android device
         infoIp.setText(getIpAddress() + ":" + PORT + "\n");
 
     }
 
+    /**
+     * terminate server
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
         if (cs != null) {
-            cs.closeAllConnections();
+            cs.stop();
         }
     }
 
@@ -79,34 +75,80 @@ public class HttpServer extends AppCompatActivity {
             }
         }
 
+        /**
+         *
+         * @param session
+         * @return response
+         *
+         * response based on request
+         */
         @Override
         public Response serve(IHTTPSession session){
-            return newFixedLengthResponse(constructHTMl());
-        }
+            String uri = session.getUri();
+            String filename = uri.substring(1);
 
-        private String constructHTMl(){
-            String html = "<html><head><meta charset=\\\"UTF-8\\\">" +
-                    "<title>Android Server</title>" +
-                    "<script type=\\\"text/javascript\\\">"+
-                    "function sendUpdate(){" +
-                    "var xmlhttp;" +
-                    "if (window.XMLHttpRequest)xmlhttp=new XMLHttpRequest();" +
-                    "else xmlhttp=new ActiveXObject(\\\"Microsoft.XMLHTTP\\\");" +
-                    "xmlhttp.open(\\\"GET\\\",\\\"?getFile\\\",true); " +
-                    "xmlhttp.send();" +
-                    "xmlhttp.onreadystatechange=function(){" +
-                    "if (xmlhttp.readyState==4 && xmlhttp.status==200)" +
-                    "document.getElementById(\\\"info\\\").innerHTML=xmlhttp.responseText;};" +
-                    "}</script>"+"</head>" +
-                    "<body>" +
-                    "<h1>Welcome to the market.</h1>" +
-                    "</div><button id=\"update\" type=\"button\" onclick=\"sendUpdate()\">get</button>"+
-                    "</body></html>";
-            return html;
-        }
+            if (uri.equals("/"))
+                filename = "index.html";
 
+            boolean is_ascii = true;
+            String mimetype = "text/html";
+            if (filename.contains(".html") || filename.contains(".htm")) {
+                mimetype = "text/html";
+                is_ascii = true;
+            } else if (filename.contains(".js")) {
+                mimetype = "text/javascript";
+                is_ascii = true;
+            } else if (filename.contains(".css")) {
+                mimetype = "text/css";
+                is_ascii = true;
+            } else if (filename.contains(".gif")) {
+                mimetype = "text/gif";
+                is_ascii = false;
+            } else if (filename.contains(".jpeg") || filename.contains(".jpg")) {
+                mimetype = "text/jpeg";
+                is_ascii = false;
+            } else if (filename.contains(".png")) {
+                mimetype = "image/png";
+                is_ascii = false;
+            } else {
+                filename = "index.html";
+                mimetype = "text/html";
+            }
+
+            if (is_ascii) {
+                String response = "";
+                String line = "";
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(getApplicationContext().getAssets().open(filename)));
+
+                    while ((line = reader.readLine()) != null) {
+                        response += line;
+                    }
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return newFixedLengthResponse(Response.Status.OK, mimetype, response);
+            }
+            else {
+                InputStream isr;
+                try {
+                    isr = getApplicationContext().getAssets().open(filename);
+                    return newFixedLengthResponse(Response.Status.OK, mimetype, isr, isr.available());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return newFixedLengthResponse(Response.Status.OK, mimetype, "");
+                }
+            }
+        }
     }
 
+    /**
+     *
+     * @return local ip address for link
+     */
     private String getIpAddress() {
         String ip = "";
         try {
@@ -130,7 +172,6 @@ public class HttpServer extends AppCompatActivity {
             }
 
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }
