@@ -2,18 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="jquery-3.4.1.min.js "></script>
     <title>Cassette Market</title>
 </head>
 <body>
-    <script>
-      function download(){
 
-      }
-      function upload(){
+    <div id="list" >
+        <a href='/downloads'>Browse Market</a>
+    </div>
 
-      }
-    </script>
-    <h1>Welcome to the market.</h1>
-    </div><button id="get" type="button" onclick="download()">get</button>
-    </div><button id="send" type="button" onclick="upload()">send</button>
+    </div>
+    <!--<div align="center">
+        <form method="post" action="" enctype="multipart/form-data"
+              id="myform">
+
+            <div >
+                <input type="file" id="file" name="file" />
+                <input type="button" class="button" value="Upload"
+                       id="but_upload">
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#but_upload").click(function() {
+                var fd = new FormData();
+                var files = $('#file')[0].files[0];
+                fd.append('file', files);
+
+                $.ajax({
+                    url: 'upload.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        if(response != 0){
+                           alert('file uploaded');
+                        }
+                        else{
+                            alert('file not uploaded');
+                        }
+                    },
+                });
+            });
+        });
+    </script>-->
 </body>
+</html>
