@@ -2,5 +2,5 @@
     <string name="app_name">GroupProject</string>
     <string name="edit">Type your message</string>
     <string name="ip"></string>
-    <string name="meg"></string>
+    <string name="meg">QR code</string>
 </resources>

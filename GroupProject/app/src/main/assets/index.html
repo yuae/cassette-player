@@ -2,52 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="jquery-3.4.1.min.js "></script>
-    <title>Cassette Market</title>
+    <title>Black Market</title>
 </head>
 <body>
 
-    <div id="list" >
-        <a href='/downloads'>Browse Market</a>
+    <div id="download" >
+        <a href='/downloads'>Browse List</a>
     </div>
-
-    </div>
-    <!--<div align="center">
-        <form method="post" action="" enctype="multipart/form-data"
-              id="myform">
-
-            <div >
-                <input type="file" id="file" name="file" />
-                <input type="button" class="button" value="Upload"
-                       id="but_upload">
-            </div>
+    <div id="upload">
+        <form id="upload-cassette" enctype="multipart/form-data" method="post" >
+            <input id="file-upload" name="cassette" type="file" onchange="setFilename(this.value);"/>
+            <input id="file-name" type="hidden" name="extension" value=".mp3" />
+            <input type="submit" value="submit" id="submit" />
         </form>
     </div>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("#but_upload").click(function() {
-                var fd = new FormData();
-                var files = $('#file')[0].files[0];
-                fd.append('file', files);
-
-                $.ajax({
-                    url: 'upload.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    success: function(response){
-                        if(response != 0){
-                           alert('file uploaded');
-                        }
-                        else{
-                            alert('file not uploaded');
-                        }
-                    },
-                });
-            });
-        });
-    </script>-->
+    <script>
+        function setFilename(val)
+        {
+            var fileName = val.substr(val.lastIndexOf("\\")+1, val.length);
+            document.getElementById("file-name").value = fileName;
+        }
+    </script>
 </body>
 </html>

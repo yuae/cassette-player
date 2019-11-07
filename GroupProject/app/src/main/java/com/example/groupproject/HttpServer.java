@@ -2,15 +2,17 @@ package com.example.groupproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,20 +25,30 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fi.iki.elonen.NanoHTTPD;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.*;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 
 public class HttpServer extends AppCompatActivity {
 
+    private static final int WIDTH = 200;
     TextView infoIp;
-    TextView infoMsg;
+    ImageView qrView;
     private final int PORT = 8888;
     private CassetteServer cs;
 
@@ -55,11 +67,78 @@ public class HttpServer extends AppCompatActivity {
         setContentView(R.layout.activity_http_server);
 
         infoIp = (TextView) findViewById(R.id.infoip);
-        infoMsg = (TextView) findViewById(R.id.msg);
+        qrView = (ImageView) findViewById(R.id.qr);
         cs = new CassetteServer(PORT);
         //display full http address on the android device
-        infoIp.setText(getIpAddress() + ":" + PORT + "\n");
+        String msg = "Please type this address to enter the Black Market:\n "
+                + getIpAddress() + ":" + PORT + "\n";
+        infoIp.setText(msg);
+        //create and display the
+        try{
+            Bitmap bm = encodeAsBitMap(getIpAddress() + ":" + PORT );
+            qrView.setImageBitmap(bm);
+        }
+        catch (WriterException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    /**
+     *  get the ip address of the device running the server
+     * @return local ip address for link
+     */
+    private String getIpAddress() {
+        String ip = "";
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
+                    .getNetworkInterfaces();
+            while (enumNetworkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = enumNetworkInterfaces
+                        .nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface
+                        .getInetAddresses();
+                while (enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
+
+                    if (inetAddress.isSiteLocalAddress()) {
+                        ip += inetAddress.getHostAddress();
+                    }
+
+                }
+
+            }
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+            ip += "Something Wrong! " + e.toString() + "\n";
+        }
+
+        return ip;
+    }
+
+
+
+    private Bitmap encodeAsBitMap(String str) throws WriterException {
+        BitMatrix result;
+        try{
+            result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
+        }
+        catch (IllegalArgumentException e){
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w*h];
+        for (int y = 0; y<h; y++){
+            int offset = y*w;
+            for(int x = 0; x<w; x++){
+                pixels[offset + x] = result.get(x, y) ? BLACK:WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
+        return bitmap;
     }
 
     /**
@@ -93,7 +172,7 @@ public class HttpServer extends AppCompatActivity {
          *
          * response based on request
          */
-        //@Override
+        @Override
         public Response serve(IHTTPSession session) {
             Map<String, String> headers = session.getHeaders();
             Map<String, String> parms = session.getParms();
@@ -107,17 +186,55 @@ public class HttpServer extends AppCompatActivity {
             File[] arrayfile;
 
 
-            try {
-                session.parseBody(new HashMap<String, String>());
-            } catch (ResponseException | IOException r) {
-                r.printStackTrace();
+
+            if(Method.POST.equals(session.getMethod()) || Method.PUT.equals(session.getMethod())){
+                //parse body to hash map
+                try {
+                    session.parseBody(files);
+                    Log.d("post","post file");
+                    Log.d("param",files.toString());
+                    String tmpFilePath = files.get("cassette");
+                    Log.d("tmpPath",tmpFilePath);
+                    File root = getApplicationContext().getExternalFilesDir(null);
+                    if (tmpFilePath == null) {
+                        // Response for invalid parameters
+                        return newFixedLengthResponse("Not valid parameters");
+                    }
+                    String ext = parms.get("extension");
+                    String name = ext;
+                    Log.d("name",name);
+                    File dst = new File(root.getAbsolutePath() + "/music/", name);
+                    if (dst.exists()) {
+                        return newFixedLengthResponse("We don't receive cassette we already have.");
+                    }
+                    File src = new File(tmpFilePath);
+                    try {
+                        InputStream in = new FileInputStream(src);
+                        OutputStream out = new FileOutputStream(dst);
+                        byte[] buf = new byte[65536];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                        in.close();
+                        out.close();
+                    } catch (IOException ioe) {
+                        return newFixedLengthResponse("Transaction failed");
+                    }
+                    return newFixedLengthResponse("Your cassette have been accepted and proceed. Thank you.");
+                } catch (ResponseException | IOException e) {
+                    e.printStackTrace();
+                }
+                return newFixedLengthResponse("Your cassette have been accepted and proceed. Thank you.");
+
             }
 
-
+            //return index, css, script file when accessing root
             if (uri.equals("/")) {
                 filename = "index.html";
                 boolean is_ascii = true;
                 String mimetype = "text/html";
+                //set MIME type
                 if (filename.contains(".html") || filename.contains(".htm")) {
                     mimetype = "text/html";
                     is_ascii = true;
@@ -140,7 +257,7 @@ public class HttpServer extends AppCompatActivity {
                     filename = "index.html";
                     mimetype = "text/html";
                 }
-
+                //check if text file
                 if (is_ascii) {
                     String response = "";
                     String line = "";
@@ -157,7 +274,9 @@ public class HttpServer extends AppCompatActivity {
                     }
 
                     return newFixedLengthResponse(Response.Status.OK, mimetype, response);
-                } else {
+                }
+                //return file in response with MIME type
+                else {
                     InputStream isr;
                     try {
                         isr = getApplicationContext().getAssets().open(filename);
@@ -167,16 +286,21 @@ public class HttpServer extends AppCompatActivity {
                         return newFixedLengthResponse(Response.Status.OK, mimetype, "");
                     }
                 }
-            } else if ("/uploadfile".equalsIgnoreCase(uri)) {
+            }
+            //put received file from cache to the music folder
+            else if (uri.equals("/upload")) {
+                String tmpFilePath = files.get("myfile");
+                Log.d("tmpPath",tmpFilePath);
                 filename = parms.get("filename");
+                Log.d("fpath",filename);
                 File root = getApplicationContext().getExternalFilesDir(null);
-                String tmpFilePath = files.get("filename");
                 if (null == filename || null == tmpFilePath) {
                     // Response for invalid parameters
+                    return newFixedLengthResponse("Not valid parameters");
                 }
                 File dst = new File(root.getAbsolutePath() + "/music/", filename);
                 if (dst.exists()) {
-                    // Response for confirm to overwrite
+                    return newFixedLengthResponse("We don't receive cassette we already have.");
                 }
                 File src = new File(tmpFilePath);
                 try {
@@ -190,10 +314,12 @@ public class HttpServer extends AppCompatActivity {
                     in.close();
                     out.close();
                 } catch (IOException ioe) {
-                    // Response for failed
+                    return newFixedLengthResponse("Transaction failed");
                 }
-                // Response for success
-            } else if (uri.equals("/downloads")) {
+                return newFixedLengthResponse("Your cassette have been accepted and proceed. Thank you.");
+            }
+            //read external memory folder and print the list of files with the uri
+            else if (uri.equals("/downloads")) {
                 File root = getApplicationContext().getExternalFilesDir(null);
 
                 FileInputStream fis = null;
@@ -202,13 +328,14 @@ public class HttpServer extends AppCompatActivity {
                 arrayfile = file.listFiles();
                 String html = "<html><body><h1>List Of All Cassettes</h1>";
                 for (int i = 0; i < arrayfile.length; i++) {
-                    html += "<a href='/music/" + arrayfile[i].getName()+"'>"+arrayfile[i].getName()+"</a>";
-
+                    html += "<li><a href='/music/" + arrayfile[i].getName()+"'>"+arrayfile[i].getName()+"</a></li>";
                 }
                 html += "</body></html>";
 
                 return newFixedLengthResponse(html);
-            } else if (uri.contains(".")) {
+            }
+            //return requested file
+            else if (uri.contains(".")) {
 
                 String[] split = uri.split("/");
                 String s = "";
@@ -239,42 +366,39 @@ public class HttpServer extends AppCompatActivity {
             }
             return newFixedLengthResponse(msg);
         }
-    }
-
-
-    /**
-     *
-     * @return local ip address for link
-     */
-    private String getIpAddress() {
-        String ip = "";
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
-                    .getNetworkInterfaces();
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces
-                        .nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface
-                        .getInetAddresses();
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-
-                    if (inetAddress.isSiteLocalAddress()) {
-                        ip += "SiteLocalAddress: "
-                                + inetAddress.getHostAddress() + "\n";
+        private boolean copyFile(File source, File target) {
+            if (source.isDirectory()) {
+                if (!target.exists()) {
+                    if (!target.mkdir()) {
+                        return false;
                     }
-
                 }
+                String[] children = source.list();
+                for (int i = 0; i < source.listFiles().length; i++) {
+                    if (!copyFile(new File(source, children[i]), new File(target, children[i]))) {
+                        return false;
+                    }
+                }
+            } else {
+                try {
+                    InputStream in = new FileInputStream(source);
+                    OutputStream out = new FileOutputStream(target);
 
+                    byte[] buf = new byte[65536];
+                    int len;
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    in.close();
+                    out.close();
+                } catch (IOException ioe) {
+                    return false;
+                }
             }
-
-        } catch (SocketException e) {
-            e.printStackTrace();
-            ip += "Something Wrong! " + e.toString() + "\n";
+            return true;
         }
-
-        return ip;
     }
+
 
 
 }
