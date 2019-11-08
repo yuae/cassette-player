@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GroupProject</string>
-    <string name="edit">Type your message</string>
+    <string name="title">Here\'s your ticket to the Black Market</string>
     <string name="ip"></string>
-    <string name="meg">QR code</string>
+    <string name="msg">QR code</string>
 </resources>
