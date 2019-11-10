@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8971f4c-74c9-4e56-971b-53b4972afb61" name="Default Changelist" comment="" />
+    <list default="true" id="9b32dddf-0056-4705-86bd-73062b353fa9" name="Default Changelist" comment="" />
+
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
@@ -17,10 +23,12 @@
       </file>
     </leaf>
   </component>
+
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectFrameBounds">
+
     <option name="x" value="95" />
     <option name="y" value="89" />
     <option name="width" value="960" />
@@ -106,12 +114,16 @@
               <item name="com" type="462c0819:PsiDirectoryNode" />
               <item name="example" type="462c0819:PsiDirectoryNode" />
               <item name="groupproject" type="462c0819:PsiDirectoryNode" />
+
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+
+      <pane id="Scope" />
+
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -136,15 +148,18 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+
       <changelist id="e8971f4c-74c9-4e56-971b-53b4972afb61" name="Default Changelist" comment="" />
       <created>1573418086206</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1573418086206</updated>
+
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
+
     <frame x="95" y="89" width="960" height="543" extended-state="0" />
     <editor active="true" />
     <layout>
@@ -170,4 +185,5 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
+
 </project>
