@@ -57,7 +57,7 @@ public class HttpServer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_http_server);
-        getSupportActionBar().setTitle("Welcome to the Black Market");
+        //getSupportActionBar().setTitle("Welcome to the Black Market");
 
         infoIp = (TextView) findViewById(R.id.infoip);
         qrView = (ImageView) findViewById(R.id.qr);
