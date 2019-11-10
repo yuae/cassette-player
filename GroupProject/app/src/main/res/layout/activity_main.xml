@@ -54,7 +54,7 @@
         android:layout_width="70dp"
         android:layout_height="72dp"
         android:adjustViewBounds="true"
-        android:background="@null"
+        android:background="@drawable/buttonshape"
         android:scaleType="centerInside"
         android:src="@drawable/scroll"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,6 +63,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.734" />
+
+
+    <ImageButton
+        android:id="@+id/black_market"
+        android:layout_width="70dp"
+        android:layout_height="72dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/buttonshape"
+        android:rotation="90"
+        android:scaleType="centerInside"
+        android:src="@drawable/blackmarket"
+        android:onClick="QRPage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.006" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
