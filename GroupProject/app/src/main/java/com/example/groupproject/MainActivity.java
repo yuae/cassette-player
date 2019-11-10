@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startActivity(HttpServer.getIntent(this));
+        //startActivity(HttpServer.getIntent(this));
     }
 
     public void lastClick(View view)
@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void pause_play(View view)
     {
+
+
+    }
+
+    public void QRPage(View view)
+    {
+        startActivity(HttpServer.getIntent(this));
 
     }
 
