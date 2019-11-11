@@ -20,10 +20,10 @@ public class MediaService extends Service {
     private int i = 0;
     //Path
     private String[] musicPath = new String[]{
-            Environment.getExternalStorageDirectory() + "/Sounds/a1.mp3",
-            Environment.getExternalStorageDirectory() + "/Sounds/a2.mp3",
-            Environment.getExternalStorageDirectory() + "/Sounds/a3.mp3",
-            Environment.getExternalStorageDirectory() + "/Sounds/a4.mp3"
+            Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/a1.mp3",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/a2.mp3",
+            Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Sounds/a3.mp3",
+            Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Sounds/a4.mp3"
     };
     //inintialize
     public MediaPlayer mMediaPlayer = new MediaPlayer();
