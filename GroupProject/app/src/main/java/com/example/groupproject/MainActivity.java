@@ -1,9 +1,11 @@
 package com.example.groupproject;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         animatorSet.playTogether(last_button_anime, next_button_anime);
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void pause_play(View view)
     {
         if(!play)

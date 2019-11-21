@@ -119,10 +119,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"
         android:layout_marginRight="40dp"
+        android:fontFamily="@font/allan"
         android:gravity="center"
-        android:fontFamily="@font/lobster"
         android:rotation="90"
-        android:text="Song Title"
+        android:text=""
         android:textSize="30sp" />
 
     <LinearLayout
