@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,11 +22,14 @@ public class MainActivity extends AppCompatActivity {
     ObjectAnimator last_button_anime ;
     ObjectAnimator next_button_anime;
     AnimatorSet animatorSet;
+    TextView songTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        songTitle = (TextView)findViewById(R.id.song_title_id);
+
         button_rotate_anime();
 
 
@@ -34,10 +38,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void lastClick(View view)
     {
-        animatorSet.pause();
-        animatorSet.setDuration(2000);
-        animatorSet.resume();
-
+        //animatorSet.pause();
+        //animatorSet.setDuration(2000);
+        animatorSet.cancel();
+        animatorSet.setStartDelay(200);
+        animatorSet.start();
+        String last_title ="";
+        songTitle.setText("last");
         //Log.d("clicked,")
 
 
@@ -67,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
     {
         if(!play)
         {
-
-
             animatorSet.start();
 
         }else
@@ -82,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void next_click(View view)
     {
-        animatorSet.pause();
-        animatorSet.setDuration(2000);
-        animatorSet.resume();
+        animatorSet.cancel();
+        animatorSet.setStartDelay(200);
+        animatorSet.start();
+
     }
 
     public void QRPage(View view)

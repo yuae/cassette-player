@@ -112,64 +112,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.006" />
+
     <TextView
+        android:id="@+id/song_title_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Song Title"
+        android:layout_gravity="center|right"
+        android:layout_marginRight="40dp"
+        android:gravity="center"
+        android:fontFamily="@font/lobster"
         android:rotation="90"
-        android:layout_gravity="center|right"/>
+        android:text="Song Title"
+        android:textSize="30sp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/c2"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_marginLeft="20dp">
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="376dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/center2"
+        android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/next_track_id"
-                android:layout_width="67dp"
-                android:layout_height="85dp"
-                android:layout_marginLeft="22dp"
-                android:layout_marginTop="5dp"
-                android:adjustViewBounds="true"
-                android:onClick="lastClick"
-                android:background="@null"
-                android:gravity="center|top"
-                android:scaleType="centerInside"
-                android:src="@drawable/scroll"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.554"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.734" />
 
-            <ImageButton
-                android:layout_width="72dp"
-                android:layout_height="169dp"
-                android:layout_marginLeft="20dp"
-                android:onClick="pause_play"
-                android:background="@drawable/play_pause" />
-            <ImageButton
-                android:id="@+id/last_track_id"
-                android:layout_width="67dp"
-                android:layout_height="85dp"
-                android:layout_marginLeft="22dp"
-                android:onClick="next_click"
-                android:layout_marginTop="5dp"
-                android:adjustViewBounds="true"
-                android:background="@null"
-                android:gravity="bottom"
-                android:scaleType="centerInside"
-                android:src="@drawable/scroll"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.554"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.734" />
+        <ImageButton
+            android:id="@+id/next_track_id"
+            android:layout_width="61dp"
+            android:layout_height="89dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="5dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:gravity="center|top"
+            android:onClick="lastClick"
+            android:scaleType="centerInside"
+            android:src="@drawable/scroll"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.554"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.734" />
+
+        <ImageButton
+            android:layout_width="81dp"
+            android:layout_height="167dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/play_pause"
+            android:onClick="pause_play" />
+
+        <ImageButton
+            android:id="@+id/last_track_id"
+            android:layout_width="61dp"
+            android:layout_height="89dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="5dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:gravity="bottom"
+            android:onClick="next_click"
+            android:scaleType="centerInside"
+            android:src="@drawable/scroll"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.554"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.734" />
     </LinearLayout>
 
     </FrameLayout>
