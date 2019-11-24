@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -187,7 +188,7 @@ public class HttpServer extends AppCompatActivity {
                     Log.d("param", files.toString());
                     String tmpFilePath = files.get("cassette");
                     Log.d("tmpPath", tmpFilePath);
-                    File root = getApplicationContext().getExternalFilesDir(null);
+                    File root = new File(Environment.getExternalStorageDirectory()+"/music");
                     if (tmpFilePath == null) {
                         // Response for invalid parameters
                         return newFixedLengthResponse("Not valid parameters");
@@ -239,7 +240,7 @@ public class HttpServer extends AppCompatActivity {
             }
             //read external memory folder and print the list of files with the uri
             else if (uri.equals("/downloads")) {
-                File root = getApplicationContext().getExternalFilesDir(null);
+                File root = new File(Environment.getExternalStorageDirectory()+"/music");
 
                 File file = new File(root.getAbsolutePath());
                 Log.d("serve: ", file.toString());
@@ -264,7 +265,7 @@ public class HttpServer extends AppCompatActivity {
                 Log.d("FileName", fileName);
                 String mimetype = NanoHTTPD.getMimeTypeForFile(fileName);
                 Log.d("MIME-TYPE", mimetype);
-                File root = getApplicationContext().getExternalFilesDir(null);
+                File root = new File(Environment.getExternalStorageDirectory()+"/music");
                 FileInputStream fis = null;
                 File file = new File(root.getAbsolutePath() + fileName);
                 Log.d("read", file.toString());

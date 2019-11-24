@@ -158,10 +158,10 @@ public class MediaService extends Service {
     }
 
     private void getFilePath(){
-        File musicFolder = new File(Environment.getExternalStorageDirectory()+"/Android/data/com.example.groupproject/files");
-//        File musicFolder = new File(Environment.getExternalStorageDirectory()+"/music");
-//        File file =getApplicationContext().getExternalFilesDir(null);
-//        File musicFolder = new File(file.getAbsolutePath());
+        //File musicFolder = new File(Environment.getExternalStorageDirectory()+"/Android/data/com.example.groupproject/files");
+        File musicFolder = new File(Environment.getExternalStorageDirectory()+"/music");
+        //File file =getApplicationContext().getExternalFilesDir(null);
+        //File musicFolder = new File(file.getAbsolutePath());
         File[] songs= musicFolder.listFiles();
         List<String> fileList = new ArrayList<>();
         for(int i = 0;i<songs.length;i++){
