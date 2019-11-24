@@ -13,15 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="start"
-        android:scaleType="fitXY"
         android:contentDescription="banner"
+        android:scaleType="fitEnd"
         app:srcCompat="@drawable/banner" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
@@ -201,6 +200,7 @@
             android:gravity="center"
             android:text="QYY INC. reserves the right to final interpretation"
             android:textColor="#93366f"
+            android:textSize="12sp"
             tools:layout_editor_absoluteX="68dp"
             tools:layout_editor_absoluteY="688dp" />
     </LinearLayout>
