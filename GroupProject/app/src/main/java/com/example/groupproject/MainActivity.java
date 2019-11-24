@@ -98,10 +98,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     animatorSet.start();
                     mMyBinder.playMusic();
                     play = true;
+                    TextView title = (TextView) findViewById(R.id.song_title_id);
+                    title.setText(mMyBinder.getSongName());
                 } else {
                     animatorSet.pause();
                     mMyBinder.pauseMusic();
                     play = false;
+                    TextView title = (TextView) findViewById(R.id.song_title_id);
+                    title.setText(mMyBinder.getSongName());
                 }
                 break;
             case R.id.next_track_id:
@@ -110,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 animatorSet.start();
                 Log.i(TAG,"Switching next");
                 mMyBinder.nextMusic();
+                songTitle.setText(mMyBinder.getSongName());
                 break;
             case R.id.last_track_id:
                 animatorSet.cancel();
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 animatorSet.start();
                 Log.i(TAG,"Switching last");
                 mMyBinder.lastMusic();
+                songTitle.setText(mMyBinder.getSongName());
                 break;
         }
     }

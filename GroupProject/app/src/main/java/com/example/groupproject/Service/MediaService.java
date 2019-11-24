@@ -136,6 +136,21 @@ public class MediaService extends Service {
         public void seekToPositon(int msec) {
             mMediaPlayer.seekTo(msec);
         }
+
+        public String getSongName(){
+            String[] fileNameArrayWithExt= musicPath[index].split("/");
+            String fileNameWithExt= fileNameArrayWithExt[fileNameArrayWithExt.length-1];
+            String fileName="";
+            if(fileNameWithExt.contains(".")){
+                for( int i =0 ; i<fileNameArrayWithExt.length;i++){
+                        if(fileNameWithExt.charAt(i)=='.'){
+                            fileName = fileNameWithExt.substring(0,i);
+                            break;
+                        }
+                }
+            }
+            return fileName;
+        }
     }
 
 
@@ -151,6 +166,7 @@ public class MediaService extends Service {
             //Get mediaPlayer prepare
             mMediaPlayer.prepare();
             Log.i(TAG,"Playing: "+musicPath[index]);
+
         } catch (IOException e) {
             Log.d(TAG, "IO exception");
             e.printStackTrace();
