@@ -119,7 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"
         android:layout_marginRight="40dp"
-        android:fontFamily="@font/allan"
+        android:fontFamily="@font/tomorrow_regular"
         android:gravity="center"
         android:rotation="90"
         android:text=""
@@ -158,7 +158,10 @@
             android:layout_height="167dp"
             android:layout_marginLeft="35dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/play_pause" />
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/play_pause"
+            android:onClick="pause_play" />
+
 
         <ImageButton
             android:id="@+id/next_track_id"
