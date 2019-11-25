@@ -8,6 +8,8 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.groupproject.MainActivity;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class MediaService extends Service {
     private MyBinder mBinder = new MyBinder();
     private int index=0;
     private String[] musicPath ;
+
     //inintialize
     public MediaPlayer mMediaPlayer = new MediaPlayer();
     private boolean complete;
@@ -51,6 +54,7 @@ public class MediaService extends Service {
          */
         public void playMusic() {
             if (!mMediaPlayer.isPlaying()) {
+
                 //Start playing if not playing
                 Log.i(TAG,"Playing");
                 mMediaPlayer.start();
