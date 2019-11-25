@@ -153,18 +153,19 @@ public class MediaService extends Service {
         }
 
         public String getSongName(){
-            String[] fileNameArrayWithExt= musicPath[index].split("/");
-            String fileNameWithExt= fileNameArrayWithExt[fileNameArrayWithExt.length-1];
-            String fileName="";
-            if(fileNameWithExt.contains(".")){
-                for( int i =0 ; i<fileNameArrayWithExt.length;i++){
-                        if(fileNameWithExt.charAt(i)=='.'){
-                            fileName = fileNameWithExt.substring(0,i);
-                            break;
-                        }
-                }
-            }
-            return fileName;
+//            String[] fileNameArrayWithExt= musicPath[index].split("/");
+//            String fileNameWithExt= fileNameArrayWithExt[fileNameArrayWithExt.length-1];
+//            String fileName="";
+//            if(fileNameWithExt.contains(".")){
+//                for( int i =0 ; i<fileNameArrayWithExt.length;i++){
+//                        if(fileNameWithExt.charAt(i)=='.'){
+//                            fileName = fileNameWithExt.substring(0,i);
+//                            break;
+//                        }
+//                }
+//            }
+
+            return musicPath[index].substring(musicPath[index].lastIndexOf("/")+1,musicPath[index].length()-4);
         }
     }
 
