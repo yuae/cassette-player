@@ -22,12 +22,20 @@ public class MediaService extends Service {
     private String[] musicPath ;
     //inintialize
     public MediaPlayer mMediaPlayer = new MediaPlayer();
+    private boolean complete;
 
 
     public MediaService() {
         getFilePath();
         iniMediaPlayerFile(index);
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                complete=true;
+            }
+        });
     }
+
 
 
     @Override
@@ -46,6 +54,7 @@ public class MediaService extends Service {
                 //Start playing if not playing
                 Log.i(TAG,"Playing");
                 mMediaPlayer.start();
+                complete=false;
             }
         }
 
@@ -67,8 +76,8 @@ public class MediaService extends Service {
             if (!mMediaPlayer.isPlaying()) {
                 //Reset if not playing
                 mMediaPlayer.reset();
-                iniMediaPlayerFile(index);
-            }
+                complete=false;
+                iniMediaPlayerFile(index);            }
         }
 
         /**
@@ -93,6 +102,7 @@ public class MediaService extends Service {
                     Log.i(TAG,"Last song. Going back to the first");
                 }
                 mMediaPlayer.reset();
+                complete=false;
                 iniMediaPlayerFile(index);
                 playMusic();
             }
@@ -110,6 +120,7 @@ public class MediaService extends Service {
                     Log.i(TAG,"First song. Going back to the last");
                 }
                 mMediaPlayer.reset();
+                complete=false;
                 iniMediaPlayerFile(index);
                 playMusic();
             }
@@ -121,6 +132,10 @@ public class MediaService extends Service {
         public int getProgress() {
 
             return mMediaPlayer.getDuration();
+        }
+
+        public boolean getCompletion(){
+            return complete;
         }
 
         /**
@@ -188,5 +203,7 @@ public class MediaService extends Service {
         fileArray= fileList.toArray(fileArray);
         musicPath=fileArray;
     }
+
+
 
 }

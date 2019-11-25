@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.os.IBinder;
 
 import android.animation.AnimatorSet;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MediaService.MyBinder mMyBinder;
     Intent MediaServiceIntent;
     private static final String TAG = "MyActivity";
+    private Handler mHandler = new Handler();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +142,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onServiceConnected(ComponentName name, IBinder service) {
             mMyBinder = (MediaService.MyBinder) service;
 
+            mHandler.post(mRunnable);
 
+            Log.d(TAG, "Service connected to activity");
         }
 
         @Override
@@ -146,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     };
-
 
     //Get permission
     @Override
@@ -164,6 +169,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(mRunnable);
+
+        mMyBinder.closeMedia();
+        unbindService(mServiceConnection);
+    }
+
+
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(mMyBinder.getCompletion()){
+                animatorSet.pause();
+            }
+            mHandler.postDelayed(mRunnable, 500);
+        }
+    };
+
+
 }
 
 
