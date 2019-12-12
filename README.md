@@ -4,8 +4,8 @@
 
 The idea of Cassette Music Player(temp) coming from a music player used that turn into a cassette UI whenever rotate into the landscape.
 
-<img src="UI.jpeg" width="284" height="160">
 
+![](https://github.com/UPEI-Android-2018/group-projects-2019-yong-ye-qu/blob/master/presentation/main.png)
 (a screenshot of the UI)
 
 This application is to simulate the experience of using a cassette player. Later the idea was further extended to adding a file exchanger to simulate the experience of exchanging music cassette back in the time of the cassette player age.
